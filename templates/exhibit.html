@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ exhibit.get('eser_adı', 'Müze Eseri') }} — {{ exhibit.get('açıklama', '')[:120] }}">
+    <title>{{ exhibit.get('eser_adı', 'Eser') }} — MÜZEREHBERI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-logo">
+                <span class="logo-icon">🏛️</span>MÜZEREHBERI
+            </h1>
+            <p class="app-subtitle">Çok Dilli İnteraktif Sergi Rehberi</p>
+        </header>
+
+        <!-- Back Link -->
+        <a href="/" class="back-link">← Tüm Eserler</a>
+
+        <!-- Exhibit Detail -->
+        <div class="exhibit-detail">
+
+            <!-- Hero Section -->
+            <section class="exhibit-hero">
+                <span class="hero-period">{{ exhibit.get('dönem', 'Bilinmiyor') }}</span>
+                <h1 class="hero-title">{{ exhibit.get('eser_adı', exhibit.id) }}</h1>
+                <p class="hero-desc">{{ exhibit.get('açıklama', 'Bu eser hakkında açıklama mevcut değildir.') }}</p>
+
+                <div class="exhibit-meta-grid">
+                    <div class="meta-card">
+                        <div class="meta-icon">📅</div>
+                        <div class="meta-label">Tarih</div>
+                        <div class="meta-value">{{ exhibit.get('tarih', 'Bilinmiyor') }}</div>
+                    </div>
+                    <div class="meta-card">
+                        <div class="meta-icon">🏛️</div>
+                        <div class="meta-label">Dönem</div>
+                        <div class="meta-value">{{ exhibit.get('dönem', 'Bilinmiyor') }}</div>
+                    </div>
+                    <div class="meta-card">
+                        <div class="meta-icon">📍</div>
+                        <div class="meta-label">Konum</div>
+                        <div class="meta-value">{{ exhibit.get('konum', 'Bilinmiyor') }}</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-gold" id="btnSpeak" onclick="speakDescription()">
+                    🔊 Sesli Rehberlik
+                </button>
+                <button class="btn btn-mic" id="btnMic" onclick="toggleVoiceInput()">
+                    🎤 Sesle Soru Sor
+                </button>
+                <div class="lang-selector" style="margin-left: auto;">
+                    <label for="exhibitLang">🌐</label>
+                    <select id="exhibitLang" onchange="onLanguageChange()">
+                        {% for code, lang in languages.items() %}
+                        <option value="{{ code }}" {% if code == 'tr' %}selected{% endif %}>
+                            {{ lang.flag }} {{ lang.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Audio Player -->
+            <div class="audio-player" id="audioPlayer">
+                <span>🔊</span>
+                <audio id="audioElement" controls></audio>
+            </div>
+
+            <!-- Chat / Q&A Section -->
+            <section class="chat-section">
+                <h2 class="section-title">💬 Eser Hakkında Soru Sorun</h2>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-bubble assistant fade-in">
+                        <div class="bubble-speaker">🏛️ Rehber</div>
+                        Merhaba! Bu eser hakkında merak ettiğiniz her şeyi sorabilirsiniz. Sesle veya yazarak soru sorabilirsiniz.
+                    </div>
+                </div>
+
+                <div class="chat-input-row">
+                    <input type="text" class="chat-input" id="chatInput"
+                           placeholder="Sorunuzu yazın..."
+                           onkeydown="if(event.key==='Enter') sendQuestion()">
+                    <button class="btn btn-gold" onclick="sendQuestion()" id="btnSend">
+                        Gönder →
+                    </button>
+                </div>
+            </section>
+
+            <!-- QR Code Section -->
+            <section class="qr-section">
+                <h3 class="section-title" style="justify-content: center;">📱 QR Kod</h3>
+                <p class="qr-label">Bu QR kodu tarayarak bu eserin sayfasına doğrudan erişebilirsiniz</p>
+                <img src="/qr/{{ exhibit.id }}.png" alt="QR Code for {{ exhibit.get('eser_adı', '') }}"
+                     onerror="this.parentElement.style.display='none'">
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>
+                <span class="footer-brand">🏛️ MÜZEREHBERI</span> — Yapay Zeka Destekli Çok Dilli Sergi Rehberi
+            </p>
+            <p style="margin-top: 4px;">LLM · RAG · TTS/STT Agent Projesi</p>
+        </footer>
+
+    </div>
+
+    <!-- Exhibit ID for JS -->
+    <script>
+        const EXHIBIT_ID = "{{ exhibit.id }}";
+        const EXHIBIT_DESC = `{{ exhibit.get('açıklama', '') }}`;
+        const EXHIBIT_NAME = `{{ exhibit.get('eser_adı', '') }}`;
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

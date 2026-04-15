@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MÜZEREHBERI - Yapay zeka destekli çok dilli interaktif müze sergi rehberi. QR kod ile eserleri keşfedin.">
+    <title>MÜZEREHBERI — Çok Dilli Sergi Rehberi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-logo">
+                <span class="logo-icon">🏛️</span>MÜZEREHBERI
+            </h1>
+            <p class="app-subtitle">Çok Dilli İnteraktif Sergi Rehberi</p>
+        </header>
+
+        <!-- Navigation Bar -->
+        <nav class="nav-bar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Eser adı veya dönem arayın..." oninput="filterExhibits()">
+            </div>
+            <div class="lang-selector">
+                <label for="globalLang">🌐 Dil:</label>
+                <select id="globalLang">
+                    {% for code, lang in languages.items() %}
+                    <option value="{{ code }}" {% if code == 'tr' %}selected{% endif %}>
+                        {{ lang.flag }} {{ lang.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </nav>
+
+        {% if error %}
+        <div class="error-banner">
+            <span>⚠️</span>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Exhibits Grid -->
+        <main>
+            <div class="exhibits-grid" id="exhibitsGrid">
+                {% for exhibit in exhibits %}
+                <a href="/eser/{{ exhibit.id }}" class="exhibit-card" data-name="{{ exhibit.get('eser_adı', '') }}" data-period="{{ exhibit.get('dönem', '') }}" data-desc="{{ exhibit.get('açıklama', '') }}">
+                    <span class="card-period">{{ exhibit.get('dönem', 'Bilinmiyor') }}</span>
+                    <h2 class="card-title">{{ exhibit.get('eser_adı', exhibit.id) }}</h2>
+                    <p class="card-desc">{{ exhibit.get('açıklama', 'Açıklama mevcut değil.') }}</p>
+                    <div class="card-meta">
+                        <span class="meta-item">📍 {{ exhibit.get('konum', '—') }}</span>
+                        <span class="meta-item">📅 {{ exhibit.get('tarih', '—') }}</span>
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            <div class="no-results hidden" id="noResults">
+                <div class="no-results-icon">🔍</div>
+                <p>Aramanızla eşleşen eser bulunamadı.</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>
+                <span class="footer-brand">🏛️ MÜZEREHBERI</span> — Yapay Zeka Destekli Çok Dilli Sergi Rehberi
+            </p>
+            <p style="margin-top: 4px;">LLM · RAG · TTS/STT Agent Projesi</p>
+        </footer>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

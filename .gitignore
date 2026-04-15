@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Ortam değişkenleri
+.env
+*.env
+
+# Vector DB (büyük dosyalar - yeniden oluşturulabilir)
+vector_db/
+
+# Üretilen ses dosyaları
+audio/output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Hugging Face cache
+.cache/

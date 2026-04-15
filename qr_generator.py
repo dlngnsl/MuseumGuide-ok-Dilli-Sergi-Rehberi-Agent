@@ -5,12 +5,28 @@ Her müze eseri için QR kod oluşturma scripti
 """
 
 import os
+import sys
+import socket
+
+# Windows konsolunda UTF-8 zorla
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 import qrcode
 from qrcode.image.styledpil import StyledPilImage
 from PIL import Image, ImageDraw, ImageFont
 
+def get_local_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "192.168.1.17"  # Fallback IP (senin bilgisayarının loglardaki IP'si)
+
 # Yapılandırma
-BASE_URL = "http://localhost:5000"
+BASE_URL = f"http://{get_local_ip()}:5000"
 OUTPUT_DIR = "qr_codes"
 DATA_DIR = "data"
 
